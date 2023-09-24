@@ -20,12 +20,11 @@ public class GitData {
 
         for (Branch branch : branches) {
             List<Commit> commits = branch.getCommits();
-            System.out.println(branch.getName());
 
-            for (int i = 0; i<commits.size(); i++) {
+            for (int i = 0; i < commits.size(); i++) {
                 Commit commit = commits.get(i);
 
-                switch (commit.getType()){
+                switch (commit.getType()) {
                     case "init":
                         break;
                     case "commit":
@@ -35,18 +34,18 @@ public class GitData {
                                 branch.getName(),
                                 branch.getName(),
                                 commit.getMessage(),
-                                commits.get(i-1).getMessage()
+                                commits.get(i - 1).getMessage()
                         );
                         break;
                     case "newbranch":
-                        builder.addNode(
+                        /*builder.addNode(
                                 commit.getId(),
                                 commit.getId(),
                                 branch.getName(),
                                 commit.getBranchFrom(),
                                 commit.getMessage(),
                                 getMessageFromAnotherBranch(commit.getId(), commit.getBranchFrom())
-                        );
+                        );*/
                         break;
                     case "merge":
                         builder.addNode(
@@ -62,29 +61,6 @@ public class GitData {
                         System.out.println("ERROR: commit type not found");
                         break;
                 }
-/*
-                if (!commit.getLastId().startsWith("000000000")) {
-                    builder.addNode(
-                            branchFrom,
-                            commit.getLastId(),
-                            commit.getMessage(),
-                            branch.getName(),
-                            commit.getCurrentId(),
-                            commit.getMessage()
-                    );
-
-                    if (mergeFrom != null) {
-                        out("Merged from: " + mergeFrom);
-                        builder.addNode(
-                                mergeFrom,
-                                commit.getLastId(),
-                                "Merge",
-                                branch.getName(),
-                                commit.getCurrentId(),
-                                commit.getMessage()
-                        );
-                    }
-                }*/
             }
         }
 
@@ -92,23 +68,18 @@ public class GitData {
         builder.saveTree(path);
     }
 
-    private String getMessageFromAnotherBranch(String id, String branchName){
-        for(Branch branch : branches){
-            if(Objects.equals(branch.getName(), branchName)){
-                for(Commit commit : branch.getCommits()){
-                    if(Objects.equals(commit.getId(), id)){
+    private String getMessageFromAnotherBranch(String id, String branchName) {
+        for (Branch branch : branches) {
+            if (Objects.equals(branch.getName(), branchName)) {
+                for (Commit commit : branch.getCommits()) {
+                    if (Objects.equals(commit.getId(), id)) {
                         return commit.getMessage();
                     }
                 }
             }
         }
-        System.out.println("Message not found for "+id+" in branch " + branchName);
+        System.out.println("Message not found for " + id + " in branch " + branchName);
         return "ERROR";
     }
 
-    private void out(String... messages) {
-        for (String message : messages)
-            System.out.print(message + "  ");
-        System.out.println();
-    }
 }
