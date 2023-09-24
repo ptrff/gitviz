@@ -7,42 +7,62 @@ import java.util.Map;
 
 public class GitData {
 
-    private final Map<String, String> commitAndMessage;
-    private final List<String> nodes;
-    private final List<String> edges;
+    private final List<Branch> branches;
 
     public GitData() {
-        nodes = new ArrayList<>();
-        edges = new ArrayList<>();
-
-        commitAndMessage = new HashMap<>();
+        branches = new ArrayList<>();
     }
 
-    public void registerCommit(String name, String message) {
-        commitAndMessage.put(name, message);
+    public void addBranch(Branch branch) {
+        branches.add(branch);
     }
 
-    public Map<String, String> getCommitsAndMessages() {
-        return commitAndMessage;
-    }
 
-    public void addNode(String node) {
-        nodes.add(node);
-    }
+    public void makeFiles(String path) {
+        TreeBuilder builder = new TreeBuilder();
 
-    public void addEdge(String from, String to) {
-        edges.add(from + " -> " + to);
-    }
+        for (Branch branch : branches) {
+            List<Commit> commits = branch.getCommits();
+            System.out.println(branch.getName());
 
-    public void display() {
-        System.out.println("Nodes:");
-        for (String node : nodes) {
-            System.out.println(node);
+            for (Commit commit : commits) {
+                String mergeFrom = commit.getMergeFrom();
+                String branchFrom = commit.getBranchFrom();
+
+                out(commit.toString());
+/*
+                if (!commit.getLastId().startsWith("000000000")) {
+                    builder.addNode(
+                            branchFrom,
+                            commit.getLastId(),
+                            commit.getMessage(),
+                            branch.getName(),
+                            commit.getCurrentId(),
+                            commit.getMessage()
+                    );
+
+                    if (mergeFrom != null) {
+                        out("Merged from: " + mergeFrom);
+                        builder.addNode(
+                                mergeFrom,
+                                commit.getLastId(),
+                                "Merge",
+                                branch.getName(),
+                                commit.getCurrentId(),
+                                commit.getMessage()
+                        );
+                    }
+                }*/
+            }
         }
 
-        System.out.println("Edges:");
-        for (String edge : edges) {
-            System.out.println(edge);
-        }
+//        builder.saveTreeAsGv(path);
+//        builder.saveTree(path);
+    }
+
+    private void out(String... messages) {
+        for (String message : messages)
+            System.out.print(message + "  ");
+        System.out.println();
     }
 }
