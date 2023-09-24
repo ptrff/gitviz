@@ -22,19 +22,18 @@ public class TreeBuilder {
         this.graph = graph().directed().graphAttr().with(Rank.dir(TOP_TO_BOTTOM));
     }
 
-    public void addNode(String parentBranch, String parentCommitName, String parentCommitMessage,
-                        String currentBranch, String currentCommitName, String currentCommitMessage) {
+    public void addNode(String id, String lastId, String branch, String lastBranch, String message, String lastMessage) {
 
-        Node parentNode = Factory.node(parentBranch + parentCommitName)
+        Node parentNode = Factory.node(lastId)
                 .with(Label.lines(
-                        parentBranch,
-                        parentCommitMessage
+                        lastBranch,
+                        lastMessage
                 ));
 
-        Node newNode = Factory.node(currentBranch + currentCommitName)
+        Node newNode = Factory.node(id)
                 .with(Label.lines(
-                        currentBranch,
-                        currentCommitMessage
+                        branch,
+                        message
                 ));
 
         graph = graph.with(parentNode.link(newNode));

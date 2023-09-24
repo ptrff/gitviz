@@ -1,38 +1,49 @@
 package ru.ptrff;
 
 public class Commit {
-    private String lastCommitId;
-    private String currentCommitId;
-    private String commitMessage;
-    private String branchName;
+
+    private String type; // init, newbranch, merge, commit
+
     private String branchFrom;
     private String mergeFrom;
 
+    private String message;
+    private String id;
+    private String lastId;
 
-    public Commit(String lastCommitId, String currentCommitId, String commitMessage,
-                  String branchName, String branchFrom, String mergeFrom) {
-        this.lastCommitId = lastCommitId;
-        this.currentCommitId = currentCommitId;
-        this.commitMessage = commitMessage;
-        this.branchName = branchName;
+
+    public Commit(String id, String message) {
+        type = "init";
+        this.id = id;
+        this.message = message;
+    }
+
+    public Commit(String id, String lastId, String message) {
+        type = "commit";
+        this.id =id;
+        this.lastId = lastId;
+        this.message = message;
+    }
+
+    public Commit(String id, String lastId, String message, String branchFrom) {
+        type = "newbranch";
+        this.id =id;
+        this.lastId = lastId;
+        this.message = message;
         this.branchFrom = branchFrom;
+    }
+
+    public Commit(String id, String lastId, String message, String mergeFrom, boolean merge) {
+        type = "merge";
+        this.id =id;
+        this.lastId = lastId;
+        this.message = message;
         this.mergeFrom = mergeFrom;
     }
 
-    public String getLastId() {
-        return lastCommitId;
-    }
 
-    public String getCurrentId() {
-        return currentCommitId;
-    }
-
-    public String getMessage() {
-        return commitMessage;
-    }
-
-    public String getBranchName() {
-        return branchName;
+    public String getType() {
+        return type;
     }
 
     public String getBranchFrom() {
@@ -43,15 +54,15 @@ public class Commit {
         return mergeFrom;
     }
 
-    @Override
-    public String toString() {
-        return "Commit{" +
-                "lastCommitId='" + lastCommitId + '\'' +
-                ", currentCommitId='" + currentCommitId + '\'' +
-                ", commitMessage='" + commitMessage + '\'' +
-                ", branchName='" + branchName + '\'' +
-                ", branchFrom='" + branchFrom + '\'' +
-                ", mergeFrom='" + mergeFrom + '\'' +
-                '}';
+    public String getMessage() {
+        return message;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getLastId() {
+        return lastId;
     }
 }

@@ -1,9 +1,6 @@
 package ru.ptrff;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GitData {
 
@@ -25,11 +22,46 @@ public class GitData {
             List<Commit> commits = branch.getCommits();
             System.out.println(branch.getName());
 
-            for (Commit commit : commits) {
-                String mergeFrom = commit.getMergeFrom();
-                String branchFrom = commit.getBranchFrom();
+            for (int i = 0; i<commits.size(); i++) {
+                Commit commit = commits.get(i);
 
-                out(commit.toString());
+                switch (commit.getType()){
+                    case "init":
+                        break;
+                    case "commit":
+                        builder.addNode(
+                                commit.getId(),
+                                commit.getLastId(),
+                                branch.getName(),
+                                branch.getName(),
+                                commit.getMessage(),
+                                commits.get(i-1).getMessage()
+                        );
+                        break;
+                    case "newbranch":
+                        builder.addNode(
+                                commit.getId(),
+                                commit.getId(),
+                                branch.getName(),
+                                commit.getBranchFrom(),
+                                commit.getMessage(),
+                                getMessageFromAnotherBranch(commit.getId(), commit.getBranchFrom())
+                        );
+                        break;
+                    case "merge":
+                        builder.addNode(
+                                commit.getId(),
+                                commit.getLastId(),
+                                branch.getName(),
+                                commit.getMergeFrom(),
+                                commit.getMessage(),
+                                getMessageFromAnotherBranch(commit.getLastId(), commit.getMergeFrom())
+                        );
+                        break;
+                    default:
+                        System.out.println("ERROR: commit type not found");
+                        break;
+                }
 /*
                 if (!commit.getLastId().startsWith("000000000")) {
                     builder.addNode(
@@ -56,8 +88,22 @@ public class GitData {
             }
         }
 
-//        builder.saveTreeAsGv(path);
-//        builder.saveTree(path);
+        builder.saveTreeAsGv(path);
+        builder.saveTree(path);
+    }
+
+    private String getMessageFromAnotherBranch(String id, String branchName){
+        for(Branch branch : branches){
+            if(Objects.equals(branch.getName(), branchName)){
+                for(Commit commit : branch.getCommits()){
+                    if(Objects.equals(commit.getId(), id)){
+                        return commit.getMessage();
+                    }
+                }
+            }
+        }
+        System.out.println("Message not found for "+id+" in branch " + branchName);
+        return "ERROR";
     }
 
     private void out(String... messages) {

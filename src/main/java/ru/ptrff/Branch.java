@@ -8,7 +8,6 @@ import java.util.List;
 public class Branch {
 
     private final String name;
-    private String initMessage;
     private final List<Commit> commits;
 
     public Branch(String name) {
@@ -18,14 +17,6 @@ public class Branch {
 
     public String getName() {
         return name;
-    }
-
-    public void setInitMessage(String message){
-        initMessage = message;
-    }
-
-    public String getInitMessage(){
-        return initMessage;
     }
 
     public List<Commit> getCommits() {
